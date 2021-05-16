@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: dacda3e0e605fe848a64f795f081e1ad
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - close: {fileID: 8504367975977495818, guid: 031cb6f0cccd9244e8e4cd6ecb143a24, type: 3}
+  - openEmpty: {fileID: 2320725945171755791, guid: 031cb6f0cccd9244e8e4cd6ecb143a24,
+      type: 3}
+  - openSm: {fileID: 6278369815317856598, guid: 031cb6f0cccd9244e8e4cd6ecb143a24,
+      type: 3}
+  - openMd: {fileID: 2362887608298692700, guid: 031cb6f0cccd9244e8e4cd6ecb143a24,
+      type: 3}
+  - openLg: {fileID: 7119253993588051440, guid: 031cb6f0cccd9244e8e4cd6ecb143a24,
+      type: 3}
+  - openXtaLg: {fileID: -3462249546935825837, guid: 031cb6f0cccd9244e8e4cd6ecb143a24,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
