@@ -4,6 +4,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using UnityEngine.UI;
 using UnityEngine.Assertions;
+using System.Linq;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -33,7 +34,8 @@ public class GameManager : Singleton<GameManager>
     private int[] winMultiplyerOnes = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
     private int[] winMultiplyerTens = { 12, 16, 24, 32, 48, 64 };
     private int[] winMultiplyerHundreds = { 100, 200, 300, 400, 500 };
-    public decimal[] dividedChestWinningsArr = new decimal[8];
+    //public decimal[] dividedChestWinningsArr = new decimal[8];
+    public List<decimal> dividedChestWinningsList = new List<decimal>();
     private AudioSource audioSource;
     public AudioSource AudioSource
     {
@@ -45,45 +47,30 @@ public class GameManager : Singleton<GameManager>
     {
         audioSource = GetComponent<AudioSource>();
         denoIndex = 0;
+        divideWinningsCounter = 0;
         denoLbl.text = denoAmt[denoIndex].ToString("C");
         banlanceLbl.text = currentBalance.ToString("C");
-        playBtn.interactable = true;
-        DenoSubBtn.interactable = true;
-        DenoAddBtn.interactable = true;
-        divideWinningsCounter = 0;
+        EnableBottomPanel();
         ChestManager.Instance.CloseAllChests();
         ChestManager.Instance.DisableAllChests();
     }
     private void Update()
     {
-        if (denoAmt[denoIndex] <= currentBalance)
-        {
-            playBtn.interactable = true;
-        }
-        else
-        {
-            playBtn.interactable = false;
-        }
+        InsufficientFunds();
     }
     public void Play()
     {
+        ChestManager.Instance.CloseAllChests();
+        ChestManager.Instance.EnableAllChests();
+
+
         playBtn.interactable = false;
         DenoSubBtn.interactable = false;
         DenoAddBtn.interactable = false;
         LastGameWinLbl.text = "$0.00";
         divideWinningsCounter = 0;
-        ChestManager.Instance.CloseAllChests();
-        ChestManager.Instance.DisableAllChests();
 
-        // Chests are pickable after pressing play
-        // when picked
-        // show open chest
-        // display money in that chest (if any)
-        // Add money to the running total (last game win)
-        // Become no longer clickable
         // After Pooper is picked, add the total won to the current balance
-        // on play press reset the Chest visuals
-
 
         if (denoAmt[denoIndex] <= currentBalance) // Check if you have enough in balance for Denomination amount
         {
@@ -158,42 +145,26 @@ public class GameManager : Singleton<GameManager>
         decimal howmuchmoneywon = (decimal)winningTotal;
         //int random = Random.Range(0, dividedChestWinningsArr.Length); // can only divide total winnings if we won 
         decimal numb = 0m;
-        for (int i = 0; i < dividedChestWinningsArr.Length; i++)
+        int randAmountOfChests = Random.Range(1, 9);
+        dividedChestWinningsList.Clear();
+        for (int i = 0; i < randAmountOfChests; i++)
         {
-            numb = (Mathf.FloorToInt((float)(howmuchmoneywon * 20)) / Random.Range(4, 8)) * 0.05m;
+            numb = (Mathf.FloorToInt((float)(howmuchmoneywon * 20)) / randAmountOfChests) * 0.05m;
             Debug.Log(numb);
-
-
-            if (i == 7)
+            if (i == randAmountOfChests-1)
             {
-                dividedChestWinningsArr[i] = howmuchmoneywon;
+                dividedChestWinningsList.Add(howmuchmoneywon);
             }
             else
             {
-                dividedChestWinningsArr[i] = numb;
+                dividedChestWinningsList.Add(numb);
                 howmuchmoneywon -= numb;
             }
         }
-        Debug.Log("$$$$$$$$$$$$$$$$$$$$");
-        foreach (var winnings in dividedChestWinningsArr)
-        {
-            //Debug.Log("Winnings Divided: " + winnings.ToString("C"));
-            Debug.Log(string.Format("{0:C2}", winnings));
-        }
-        Debug.Log("$$$$$$$$$$$$$$$$$$$$");
 
-
-        ChestManager.Instance.EnableAllChests();
         playBtn.interactable = false;
         DenoSubBtn.interactable = false;
         DenoAddBtn.interactable = false;
-
-        ChestManager.Instance.DisplayWinning(0);
-        // Can click on chests
-        // show open chest
-        // display money in that chest
-        // add money
-        // no longer clickable
 
         // after pooper is found diable all the chests
 
@@ -226,8 +197,49 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    public decimal[] GetWinningsArray()
+    public List<decimal> GetWinningsArray()
     {
-        return dividedChestWinningsArr;
+        while (dividedChestWinningsList.Count < 9)
+        {
+            AddZeroEndofList();
+        }
+        Debug.Log("----------------");
+        Debug.Log(dividedChestWinningsList.Count);
+        foreach (var item in dividedChestWinningsList)
+        {
+            Debug.Log(item.ToString("C"));
+        }
+        Debug.Log("----------------");
+        return dividedChestWinningsList;
+    }
+    void  AddZeroEndofList()
+    {
+        dividedChestWinningsList.Add(0m);
+    }
+
+    public void EnableBottomPanel()
+    {
+        playBtn.interactable = true;
+        DenoSubBtn.interactable = true;
+        DenoAddBtn.interactable = true;
+    }
+
+    public void DisableBottomPanel()
+    {
+        playBtn.interactable = false;
+        DenoSubBtn.interactable = false;
+        DenoAddBtn.interactable = false;
+    }
+
+    void InsufficientFunds()
+    {
+        if (denoAmt[denoIndex] <= currentBalance)
+        {
+            playBtn.interactable = true;
+        }
+        else
+        {
+            playBtn.interactable = false;
+        }
     }
 }
