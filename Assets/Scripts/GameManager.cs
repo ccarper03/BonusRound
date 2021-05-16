@@ -15,15 +15,12 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private Button playBtn;
     [SerializeField] private Button DenoSubBtn;
     [SerializeField] private Button DenoAddBtn;
-    
     private int divideWinningsCounter;
-
     public int DivideWinningsCounter
     {
         get { return divideWinningsCounter; }
         set { divideWinningsCounter = value; }
     }
-
     private float currentBalance = 10.00f;
     private int denoIndex = 0;
     private float[] denoAmt = { .25f, .50f, 1.00f, 5.00f };
@@ -41,7 +38,6 @@ public class GameManager : Singleton<GameManager>
     {
         get { return audioSource; }
     }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -61,30 +57,24 @@ public class GameManager : Singleton<GameManager>
     public void Play()
     {
         ChestManager.Instance.CloseAllChests();
-        ChestManager.Instance.EnableAllChests();
-
-
-        playBtn.interactable = false;
-        DenoSubBtn.interactable = false;
-        DenoAddBtn.interactable = false;
-        LastGameWinLbl.text = "$0.00";
-        divideWinningsCounter = 0;
-
-        // After Pooper is picked, add the total won to the current balance
-
+        ChestManager.Instance.DisableAllChests();
+        EnableBottomPanel();
+        ResetLastWinGameText();
+        ResetDivideWinningCounter();
         if (denoAmt[denoIndex] <= currentBalance) // Check if you have enough in balance for Denomination amount
         {
-            float randNum = Random.value;
+            float randNum = GetRandomValue();
             if (randNum <= .5f)// 50%
             {
-                Debug.Log(randNum + " 50%");
                 // Get input 
                 denominator = denoAmt[denoIndex];
 
                 // Calculate the values
-
+                DisableBottomPanel();
+                ChestManager.Instance.CloseAllChests();
+                ChestManager.Instance.EnableAllChests();
+                
                 // Output the results
-                Debug.Log(" Denominator: " + denominator + " Current Balance: " + currentBalance);
                 LastGameWinLbl.text = "$0.00";
                 banlanceLbl.text = (currentBalance -= denominator).ToString("C");
             }
@@ -92,7 +82,7 @@ public class GameManager : Singleton<GameManager>
             {
                 Debug.Log(randNum + " 30%");
                 // Get input 
-                multiplier = winMultiplyerOnes[Random.Range(0,10)];
+                multiplier = winMultiplyerOnes[Random.Range(0, 10)];
                 denominator = denoAmt[denoIndex];
 
                 // Calculate the values
@@ -101,7 +91,6 @@ public class GameManager : Singleton<GameManager>
                 currentBalance += winningTotal;
 
                 // Output the results
-                Debug.Log("Mulitplyer: " + multiplier + " Denominator: " + denominator + " Winning Total: " + winningTotal + " Current Balance: " + currentBalance);
                 banlanceLbl.text = currentBalance.ToString("C");
                 LastGameWinLbl.text = winningTotal.ToString("C");
 
@@ -119,7 +108,6 @@ public class GameManager : Singleton<GameManager>
                 currentBalance += winningTotal;
 
                 // Output the results
-                Debug.Log("Mulitplyer: " + multiplier + " Denominator: " + denominator + " Winning Total: " + winningTotal + " Current Balance: " + currentBalance);
                 banlanceLbl.text = currentBalance.ToString("C");
                 LastGameWinLbl.text = winningTotal.ToString("C");
             }
@@ -136,14 +124,12 @@ public class GameManager : Singleton<GameManager>
                 currentBalance += winningTotal;
 
                 // Output the results
-                Debug.Log("Mulitplyer: "+ multiplier + " Denominator: " + denominator + " Winning Total: " + winningTotal + " Current Balance: " + currentBalance);
                 banlanceLbl.text = currentBalance.ToString("C");
                 LastGameWinLbl.text = winningTotal.ToString("C");
             }
         }
 
         decimal howmuchmoneywon = (decimal)winningTotal;
-        //int random = Random.Range(0, dividedChestWinningsArr.Length); // can only divide total winnings if we won 
         decimal numb = 0m;
         int randAmountOfChests = Random.Range(1, 9);
         dividedChestWinningsList.Clear();
@@ -151,7 +137,7 @@ public class GameManager : Singleton<GameManager>
         {
             numb = (Mathf.FloorToInt((float)(howmuchmoneywon * 20)) / randAmountOfChests) * 0.05m;
             Debug.Log(numb);
-            if (i == randAmountOfChests-1)
+            if (i == randAmountOfChests - 1)
             {
                 dividedChestWinningsList.Add(howmuchmoneywon);
             }
@@ -161,18 +147,21 @@ public class GameManager : Singleton<GameManager>
                 howmuchmoneywon -= numb;
             }
         }
+    }
 
-        playBtn.interactable = false;
-        DenoSubBtn.interactable = false;
-        DenoAddBtn.interactable = false;
+    private static float GetRandomValue()
+    {
+        return Random.value;
+    }
 
-        // after pooper is found diable all the chests
+    private void ResetDivideWinningCounter()
+    {
+        divideWinningsCounter = 0;
+    }
 
-
-        // close and disable all the chests
-        playBtn.interactable = true;
-        DenoSubBtn.interactable = true;
-        DenoAddBtn.interactable = true;
+    private void ResetLastWinGameText()
+    {
+        LastGameWinLbl.text = "$0.00";
     }
 
     // Add Denomination Button
@@ -197,26 +186,23 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    // Send the List
     public List<decimal> GetWinningsArray()
     {
         while (dividedChestWinningsList.Count < 9)
         {
             AddZeroEndofList();
         }
-        Debug.Log("----------------");
-        Debug.Log(dividedChestWinningsList.Count);
-        foreach (var item in dividedChestWinningsList)
-        {
-            Debug.Log(item.ToString("C"));
-        }
-        Debug.Log("----------------");
         return dividedChestWinningsList;
     }
+    
+    // Add Zeros to the remaining positions of the list
     void  AddZeroEndofList()
     {
         dividedChestWinningsList.Add(0m);
     }
-
+    
+    // Function to Enable the bottom Panels, Denominator & PlayButton
     public void EnableBottomPanel()
     {
         playBtn.interactable = true;
@@ -224,6 +210,7 @@ public class GameManager : Singleton<GameManager>
         DenoAddBtn.interactable = true;
     }
 
+    // Funtion to Disable the Bottom Panels, Denominator & PlayButton
     public void DisableBottomPanel()
     {
         playBtn.interactable = false;
@@ -231,6 +218,8 @@ public class GameManager : Singleton<GameManager>
         DenoAddBtn.interactable = false;
     }
 
+    // Checks if Denominator Amount is less than
+    // current balance, disables play button if true
     void InsufficientFunds()
     {
         if (denoAmt[denoIndex] <= currentBalance)

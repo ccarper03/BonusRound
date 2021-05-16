@@ -50,8 +50,6 @@ public class Chest : MonoBehaviour
     {
         List<decimal> winningsArray = GameManager.Instance.GetWinningsArray();
         decimal winningAmt = winningsArray[GameManager.Instance.DivideWinningsCounter];
-        Debug.Log("Counter: " + GameManager.Instance.DivideWinningsCounter);
-        Debug.Log("Winning Amount: " + winningAmt);
         if (winningAmt == 0)
         {
             gameObject.GetComponent<Image>().sprite = openEmpty;
