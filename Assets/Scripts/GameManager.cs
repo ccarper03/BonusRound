@@ -7,12 +7,14 @@ using UnityEngine.Assertions;
 
 public class GameManager : Singleton<GameManager>
 {
+    [SerializeField] public Text ChestOneWinText;
     [SerializeField] private Text LastGameWinLbl;
     [SerializeField] private Text banlanceLbl;
     [SerializeField] private Text denoLbl;
     [SerializeField] private Button playBtn;
     [SerializeField] private Button DenoSubBtn;
     [SerializeField] private Button DenoAddBtn;
+    
     private int divideWinningsCounter;
 
     public int DivideWinningsCounter
@@ -185,6 +187,8 @@ public class GameManager : Singleton<GameManager>
         playBtn.interactable = false;
         DenoSubBtn.interactable = false;
         DenoAddBtn.interactable = false;
+
+        ChestManager.Instance.DisplayWinning(0);
         // Can click on chests
         // show open chest
         // display money in that chest

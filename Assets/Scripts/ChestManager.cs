@@ -14,6 +14,10 @@ public class ChestManager :Singleton<ChestManager>
     [SerializeField] private Sprite openXtaLg;
     [SerializeField] private GameObject[] Chests;
 
+
+    void Start()
+    {
+    }
     public void DisableChest()
     {
         GetComponent<Button>().interactable = false;
@@ -41,58 +45,31 @@ public class ChestManager :Singleton<ChestManager>
     }
     public void CloseChest()
     {
-        GetComponent<Image>().sprite = close;
+        gameObject.GetComponent<Image>().sprite = close;
     }
     public void OpenSmChest( )
     {
-        GetComponent<Image>().sprite = openSm;
+        gameObject.GetComponent<Image>().sprite = openSm;
     }
     public void OpenMdChest()
     {
-        GetComponent<Image>().sprite = openMd;
+        gameObject.GetComponent<Image>().sprite = openMd;
     }
     public void OpenLgChest()
     {
-        GetComponent<Image>().sprite = openLg;
+        gameObject.GetComponent<Image>().sprite = openLg;
     }
     public void OpenXtaLgChest()
     {
-        GetComponent<Image>().sprite = openXtaLg;
+        gameObject.GetComponent<Image>().sprite = openXtaLg;
     }
 
-    public void DisplayWinning()
+    public void DisplayWinning(int index)
     {
         decimal[] num = GameManager.Instance.GetWinningsArray();
         var winningAmount = num[GameManager.Instance.DivideWinningsCounter];
-        Debug.Log(GameManager.Instance.DivideWinningsCounter);
-        Debug.Log("---" + winningAmount + "---");
-        if (winningAmount > 500)
-        {
-            GetComponent<Image>().sprite = openXtaLg;
-            Debug.Log("Xtra");
-        }
-        else if (winningAmount > 60)
-        {
-            GetComponent<Image>().sprite = openLg;
-            Debug.Log("Lg");
-        }
-        else if (winningAmount > 5)
-        {
-            GetComponent<Image>().sprite = openMd;
-            Debug.Log("Md");
-        }
-        else if (winningAmount > .24m)
-        {
-            GetComponent<Image>().sprite = openSm;
-            Debug.Log("sm");
-        }
-        else if (winningAmount < .25m)
-        {
-            GetComponent<Image>().sprite = openEmpty;
-            Debug.Log("Empty");
-        }
-        GameManager.Instance.DivideWinningsCounter++;
-        Debug.Log(GameManager.Instance.DivideWinningsCounter);
-        Instance.DisableChest(); 
+        Chests[index].GetComponent<Image>().sprite = openXtaLg;
+        GameManager.Instance.ChestOneWinText.text = winningAmount.ToString("C");
+        Chests[index].GetComponent<Button>().interactable = false;
     }
 }
