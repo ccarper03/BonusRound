@@ -6,82 +6,72 @@ using UnityEngine.UI;
 
 public class Chest : MonoBehaviour
 {
-    [SerializeField]
-    private Chest chestObject;
-    [SerializeField]
-    private Sprite close;
-    [SerializeField]
-    private Sprite openEmpty;
-    [SerializeField]
-    private Sprite openSm;
-    [SerializeField]
-    private Sprite openMd;
-    [SerializeField]
-    private Sprite openLg;
-    [SerializeField]
-    private Sprite openXtraLg;
-    [SerializeField]
-    public Text winningText;
-    [SerializeField]
-    private Button chestButton;
+    [SerializeField] private Chest chestObject;
+    [SerializeField] private Sprite close;
+    [SerializeField] private Sprite openEmpty;
+    [SerializeField] private Sprite openSm;
+    [SerializeField] private Sprite openMd;
+    [SerializeField] private Sprite openLg;
+    [SerializeField] private Sprite openXtraLg;
+    [SerializeField] public Text winningText;
+    [SerializeField] private Image chestImage;
+    [SerializeField] private Button chestButton;
 
-    public decimal winningAmount;
+    private decimal winningAmount;
 
-    public Chest ChestObject
-    {
-        get
-        {
-            return chestObject;
-        }
-    }
-
-    public decimal WinningAmount
-    {
-        get { return winningAmount; }
-        set { winningAmount = value; }
-    }
+    public Button ChestButton => chestButton;
+    public Chest ChestObject => chestObject;
+    public Image ChestImage => chestImage;
 
     public void WinningText() 
     {
-        GetComponent<Text>().text = String.Format("{0:0.00}", winningAmount);
-    }   
+        winningText.text = string.Format("{0:0.00}", winningAmount);
+    }
 
+    private void Start()
+    {
+        chestButton.onClick.AddListener(OpenChest);
+    }
+    private void OnDestroy()
+    {
+        chestButton.onClick.RemoveListener(OpenChest);
+    }
     public void OpenChest()
     {
         List<decimal> winningsArray = GameManager.Instance.GetWinningsArray();
         decimal winningAmt = winningsArray[GameManager.Instance.DivideWinningsCounter];
         if (winningAmt == 0)
         {
-            gameObject.GetComponent<Image>().sprite = openEmpty;
-            gameObject.GetComponent<Button>().interactable = false;
+            chestImage.sprite = openEmpty;
+            chestButton.interactable = false;
             GameManager.Instance.dividedChestWinningsList.Clear();
             ChestManager.Instance.DisableAllChests();
             GameManager.Instance.EnableBottomPanel();
         }
         if (winningAmt < .25m || Input.GetKeyDown(KeyCode.Q))
         {
-            gameObject.GetComponent<Image>().sprite = openEmpty;
-            gameObject.GetComponent<Button>().interactable = false;
+            chestImage.sprite = openEmpty;
+            chestButton.interactable = false;
         }
         else if (winningAmt > 500m || Input.GetKeyDown(KeyCode.W))
         {
-            gameObject.GetComponent<Image>().sprite = openXtraLg;
-            gameObject.GetComponent<Button>().interactable = false;
+            chestImage.sprite = openXtraLg;
+            chestButton.interactable = false;
         }
         else if (winningAmt > 60m || Input.GetKeyDown(KeyCode.E))
         {
-            gameObject.GetComponent<Image>().sprite = openLg;
-            gameObject.GetComponent<Button>().interactable = false;
+            chestImage.sprite = openLg;
+            chestButton.interactable = false;
         }
         else if (winningAmt > 5m || Input.GetKeyDown(KeyCode.R))
         {
-            gameObject.GetComponent<Image>().sprite = openMd;
-            gameObject.GetComponent<Button>().interactable = false;
+            chestImage.sprite = openMd;
+            chestButton.interactable = false;
         }
         else if (winningAmt > .24m || Input.GetKeyDown(KeyCode.T))
         {
-            gameObject.GetComponent<Image>().sprite = openSm;
-            gameObject.GetComponent<Button>().interactable = false;
+            chestImage.sprite = openSm;
+            chestButton.interactable = false;
         }
         winningText.text = winningAmt.ToString("C");
         GameManager.Instance.DivideWinningsCounter++;

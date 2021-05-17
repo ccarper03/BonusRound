@@ -5,40 +5,23 @@ using UnityEngine.UI;
 
 public class ChestManager :Singleton<ChestManager>
 {
-    [SerializeField] private Sprite close;
+    [SerializeField] 
+    private Sprite close;
+    [SerializeField]
+    private Chest[] ChestList;
 
-    public List<Chest> ChestList = new List<Chest>();
-    void Start()
-    {
-        
-    }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            DisableAllChests();
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            EnableAllChests();
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            CloseAllChests();
-        }
-    }
     public void DisableAllChests()
     {
         foreach (var chest in ChestList)
         {
-            chest.GetComponent<Button>().interactable = false;
+            chest.ChestButton.interactable = false;
         }
     }
     public void EnableAllChests()
     {
         foreach (var chest in ChestList)
         {
-            chest.GetComponent<Button>().interactable = true;
+            chest.ChestButton.interactable = true;
         }
     }
 
@@ -46,7 +29,7 @@ public class ChestManager :Singleton<ChestManager>
     {
         foreach (var chest in ChestList)
         {
-            chest.GetComponent<Image>().sprite = close;
+            chest.ChestImage.sprite = close;
             chest.winningText.text = "";
         }
     }

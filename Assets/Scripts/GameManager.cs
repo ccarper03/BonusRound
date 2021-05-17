@@ -23,15 +23,13 @@ public class GameManager : Singleton<GameManager>
     }
     private float currentBalance = 10.00f;
     private int denoIndex = 0;
-    private float[] denoAmt = { .25f, .50f, 1.00f, 5.00f };
     private float denominator;
     private float winningTotal;
+    private float[] denoAmt = { .25f, .50f, 1.00f, 5.00f };
     private int multiplier;
-    private float lastGameWin;
     private int[] winMultiplyerOnes = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
     private int[] winMultiplyerTens = { 12, 16, 24, 32, 48, 64 };
     private int[] winMultiplyerHundreds = { 100, 200, 300, 400, 500 };
-    //public decimal[] dividedChestWinningsArr = new decimal[8];
     public List<decimal> dividedChestWinningsList = new List<decimal>();
     private AudioSource audioSource;
     public AudioSource AudioSource
