@@ -24,6 +24,7 @@ public class GameManager : Singleton<GameManager>
     private float currentBalance = 10.00f;
     private int denoIndex = 0;
     private float denominator;
+    private int numOfChests;
     private float winningTotal;
     private float[] denoAmt = { .25f, .50f, 1.00f, 5.00f };
     private int multiplier;
@@ -54,88 +55,111 @@ public class GameManager : Singleton<GameManager>
     }
     public void Play()
     {
+        numOfChests = 0;
+        denominator = denoAmt[denoIndex];
         ChestManager.Instance.CloseAllChests();
         ChestManager.Instance.DisableAllChests();
         EnableBottomPanel();
         ResetLastWinGameText();
         ResetDivideWinningCounter();
+
+
         if (denoAmt[denoIndex] <= currentBalance) // Check if you have enough in balance for Denomination amount
         {
+            currentBalance -= denominator;
+            banlanceLbl.text = currentBalance.ToString("C");
             float randNum = GetRandomValue();
             if (randNum <= .5f)// 50%
             {
+                winningTotal = 0;
+                Debug.Log(randNum + " 50%");
                 // Get input 
-                denominator = denoAmt[denoIndex];
 
                 // Calculate the values
-                DisableBottomPanel();
-                ChestManager.Instance.CloseAllChests();
-                ChestManager.Instance.EnableAllChests();
-                
+                // Nothing to calculate
+
                 // Output the results
-                LastGameWinLbl.text = "$0.00";
-                banlanceLbl.text = (currentBalance -= denominator).ToString("C");
+                DisableBottomPanel();
+                ChestManager.Instance.EnableAllChests();
+                if (ChestManager.Instance.chestsOpened == 1 && winningTotal == 0)
+                {
+                    LastGameWinLbl.text = LastGameWinLbl.text = "$0.00";
+                    banlanceLbl.text = currentBalance.ToString("C");
+                }
             }
-            else if (randNum > .5f && randNum < .8f) // 30%
+            else if (randNum > .5f && randNum < .8f) // 30% 
             {
                 Debug.Log(randNum + " 30%");
                 // Get input 
                 multiplier = winMultiplyerOnes[Random.Range(0, 10)];
-                denominator = denoAmt[denoIndex];
 
                 // Calculate the values
-                banlanceLbl.text = (currentBalance -= denominator).ToString("C");
                 winningTotal = multiplier * denominator;
                 currentBalance += winningTotal;
+                AddWinningTotalsToChests();
 
                 // Output the results
-                banlanceLbl.text = currentBalance.ToString("C");
-                LastGameWinLbl.text = winningTotal.ToString("C");
-
+                DisableBottomPanel();
+                ChestManager.Instance.EnableAllChests();
+                if (ChestManager.Instance.chestsOpened == numOfChests)
+                {
+                    LastGameWinLbl.text = winningTotal.ToString("C");
+                    banlanceLbl.text = currentBalance.ToString("C");
+                }
             }
             else if (randNum > .80f && randNum < .95f) // 15%
             {
                 Debug.Log(randNum + " 15%");
                 // Get input 
                 multiplier = winMultiplyerTens[Random.Range(0, 6)];
-                denominator = denoAmt[denoIndex];
 
                 // Calculate the values
-                banlanceLbl.text = (currentBalance -= denominator).ToString("C");
                 winningTotal = multiplier * denominator;
                 currentBalance += winningTotal;
+                AddWinningTotalsToChests();
 
                 // Output the results
-                banlanceLbl.text = currentBalance.ToString("C");
-                LastGameWinLbl.text = winningTotal.ToString("C");
+                DisableBottomPanel();
+                ChestManager.Instance.EnableAllChests();
+                if (ChestManager.Instance.chestsOpened == numOfChests)
+                {
+                    LastGameWinLbl.text = winningTotal.ToString("C");
+                    banlanceLbl.text = currentBalance.ToString("C");
+                }
             }
             else if (randNum > .95f) // 5%
             {
                 Debug.Log(randNum + " 5%");
                 // Get input 
                 multiplier = winMultiplyerHundreds[Random.Range(0, 5)];
-                denominator = denoAmt[denoIndex];
 
                 // Process Calculations
-                banlanceLbl.text = (currentBalance -= denominator).ToString("C");
                 winningTotal = multiplier * denominator;
                 currentBalance += winningTotal;
+                AddWinningTotalsToChests();
 
                 // Output the results
-                banlanceLbl.text = currentBalance.ToString("C");
-                LastGameWinLbl.text = winningTotal.ToString("C");
+                DisableBottomPanel();
+                ChestManager.Instance.EnableAllChests();
+                if (ChestManager.Instance.chestsOpened == numOfChests)
+                {
+                    LastGameWinLbl.text = winningTotal.ToString("C");
+                    banlanceLbl.text = currentBalance.ToString("C");
+                }
             }
         }
+    }
 
+    private void AddWinningTotalsToChests()
+    {
         decimal howmuchmoneywon = (decimal)winningTotal;
         decimal numb = 0m;
-        int randAmountOfChests = Random.Range(1, 9);
+        numOfChests = Random.Range(1, 9);
         dividedChestWinningsList.Clear();
-        for (int i = 0; i < randAmountOfChests; i++)
+        for (int i = 0; i < numOfChests; i++)
         {
-            numb = (Mathf.FloorToInt((float)(howmuchmoneywon * 20)) / randAmountOfChests) * 0.05m;
-            Debug.Log(numb);
-            if (i == randAmountOfChests - 1)
+            numb = (Mathf.FloorToInt((float)(howmuchmoneywon * 20)) / numOfChests) * 0.05m;
+            if (i == numOfChests - 1)
             {
                 dividedChestWinningsList.Add(howmuchmoneywon);
             }

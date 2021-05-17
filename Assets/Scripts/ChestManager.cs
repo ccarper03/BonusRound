@@ -9,7 +9,7 @@ public class ChestManager :Singleton<ChestManager>
     private Sprite close;
     [SerializeField]
     private Chest[] ChestList;
-
+    public int chestsOpened;
     public void DisableAllChests()
     {
         foreach (var chest in ChestList)

@@ -18,7 +18,6 @@ public class Chest : MonoBehaviour
     [SerializeField] private Button chestButton;
 
     private decimal winningAmount;
-
     public Button ChestButton => chestButton;
     public Chest ChestObject => chestObject;
     public Image ChestImage => chestImage;
@@ -38,6 +37,7 @@ public class Chest : MonoBehaviour
     }
     public void OpenChest()
     {
+        
         List<decimal> winningsArray = GameManager.Instance.GetWinningsArray();
         decimal winningAmt = winningsArray[GameManager.Instance.DivideWinningsCounter];
         if (winningAmt == 0)
@@ -52,26 +52,31 @@ public class Chest : MonoBehaviour
         {
             chestImage.sprite = openEmpty;
             chestButton.interactable = false;
+            ChestManager.Instance.chestsOpened++;
         }
         else if (winningAmt > 500m || Input.GetKeyDown(KeyCode.W))
         {
             chestImage.sprite = openXtraLg;
             chestButton.interactable = false;
+            ChestManager.Instance.chestsOpened++;
         }
         else if (winningAmt > 60m || Input.GetKeyDown(KeyCode.E))
         {
             chestImage.sprite = openLg;
             chestButton.interactable = false;
+            ChestManager.Instance.chestsOpened++;
         }
         else if (winningAmt > 5m || Input.GetKeyDown(KeyCode.R))
         {
             chestImage.sprite = openMd;
             chestButton.interactable = false;
+            ChestManager.Instance.chestsOpened++;
         }
         else if (winningAmt > .24m || Input.GetKeyDown(KeyCode.T))
         {
             chestImage.sprite = openSm;
             chestButton.interactable = false;
+            ChestManager.Instance.chestsOpened++;
         }
         winningText.text = winningAmt.ToString("C");
         GameManager.Instance.DivideWinningsCounter++;
