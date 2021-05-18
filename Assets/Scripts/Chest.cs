@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class Chest : MonoBehaviour
 {
+    public enum ChestType { Closed, OpenEmpty, OpenSm, OpenMd, OpenLg, OpenXtraLg }
     [SerializeField] private Chest chestObject;
     [SerializeField] private Sprite close;
     [SerializeField] private Sprite openEmpty;
@@ -14,79 +15,106 @@ public class Chest : MonoBehaviour
     [SerializeField] private Sprite openMd;
     [SerializeField] private Sprite openLg;
     [SerializeField] private Sprite openXtraLg;
-    [SerializeField] public Text winningText;
+    [SerializeField] public Text ChestText;
     [SerializeField] private Image chestImage;
     [SerializeField] private Button chestButton;
+    [SerializeField] private bool isChestPressed;
 
     private decimal winningAmount;
+   // public ChestType ChestType;
     public Button ChestButton => chestButton;
     public Chest ChestObject => chestObject;
     public Image ChestImage => chestImage;
-
-    public void WinningText() 
-    {
-        winningText.text = string.Format("{0:0.00}", winningAmount);
-    }
+    public bool IsChestPressed => isChestPressed;
 
     private void Start()
     {
-        chestButton.onClick.AddListener(OpenChest);
+        isChestPressed = false;
+        chestButton.onClick.AddListener(ChestIsPressed);
     }
     private void OnDestroy()
     {
-        chestButton.onClick.RemoveListener(OpenChest);
+        chestButton.onClick.RemoveListener(ChestIsPressed);
     }
-    public void OpenChest()
+    public void ChestIsPressed()
     {
-        //Fix this 
-        List<decimal> winningsArray = GameManager.Instance.GetWinningsArray();
-        decimal[] orderedList = winningsArray.OrderByDescending(i => i).ToArray();
-        decimal winningAmt = orderedList[GameManager.Instance.DivideWinningsCounter];
-        if (winningAmt == 0)
-        {
-            chestImage.sprite = openEmpty;
-            chestButton.interactable = false;
-            GameManager.Instance.dividedChestWinningsList.Clear();
-            ChestManager.Instance.DisableAllChests();
-            GameManager.Instance.EnableBottomPanel();
-            GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Pooper);
-        }
-        if (winningAmount != 0 && winningAmt < .25m || Input.GetKeyDown(KeyCode.Q))
-        {
-            chestImage.sprite = openEmpty;
-            chestButton.interactable = false;
-            ChestManager.Instance.ChestsOpened++;
-            GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Pooper);
-        }
-        else if (winningAmt > 500m || Input.GetKeyDown(KeyCode.W))
-        {
-            chestImage.sprite = openXtraLg;
-            chestButton.interactable = false;
-            ChestManager.Instance.ChestsOpened++;
-            GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Hooray);
-        }
-        else if (winningAmt > 60m || Input.GetKeyDown(KeyCode.E))
-        {
-            chestImage.sprite = openLg;
-            chestButton.interactable = false;
-            ChestManager.Instance.ChestsOpened++;
-            GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Alright);
-        }
-        else if (winningAmt > 5m || Input.GetKeyDown(KeyCode.R))
-        {
-            chestImage.sprite = openMd;
-            chestButton.interactable = false;
-            ChestManager.Instance.ChestsOpened++;
-            GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Nice);
-        }
-        else if (winningAmt > .24m || Input.GetKeyDown(KeyCode.T))
-        {
-            chestImage.sprite = openSm;
-            chestButton.interactable = false;
-            ChestManager.Instance.ChestsOpened++;
-            GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Nice);
-        }
-        winningText.text = winningAmt.ToString("C");
+        isChestPressed = true;
         GameManager.Instance.DivideWinningsCounter++;
-    } 
+    }
+    public void ChangeChestSprite(ChestType Type)
+    {
+        switch (Type)
+        {
+            case ChestType.Closed:
+            {
+                chestImage.sprite = close;
+                break;
+            }
+            case ChestType.OpenEmpty: 
+            {
+                chestImage.sprite = openEmpty;
+                chestButton.interactable = false;
+                GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Pooper);
+                break;
+            }
+            case ChestType.OpenSm:
+            {
+                chestImage.sprite = openSm;
+                chestButton.interactable = false;
+                GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Nice);
+                break;
+            }
+            case ChestType.OpenMd:
+            {
+                chestImage.sprite = openMd;
+                chestButton.interactable = false;
+                GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Whoa);
+                break;
+            }
+            case ChestType.OpenLg:
+            {
+                chestImage.sprite = openLg;
+                chestButton.interactable = false;
+                GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Alright);
+                break;
+            }
+            case ChestType.OpenXtraLg:
+            {
+                chestImage.sprite = openXtraLg;
+                chestButton.interactable = false;
+                GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Hooray);
+                break;
+            }
+        }
+
+       
+        //if (winningAmount != 0 && individualChestWinning < .25m || Input.GetKeyDown(KeyCode.Q))
+        //{
+        //    chestImage.sprite = openEmpty;
+        //    chestButton.interactable = false;
+        //    ChestManager.Instance.ChestsOpened++;
+        //    GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Pooper);
+        //}
+        //else if (individualChestWinning > 500m || Input.GetKeyDown(KeyCode.W))
+        //{
+        //    chestImage.sprite = openXtraLg;
+        //    chestButton.interactable = false;
+        //    ChestManager.Instance.ChestsOpened++;
+        //    GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Hooray);
+        //}
+ 
+        //ChestText.text = individualChestWinning.ToString("C");
+        //GameManager.Instance.DivideWinningsCounter++;
+    }
+
+    public void Reset()
+    {
+        isChestPressed = false;
+        ChestText.text = "";
+        ChangeChestSprite(ChestType.Closed);
+    }
+    public void ChangeChestText( decimal value)
+    {
+        ChestText.text = value.ToString("C");
+    }
 }

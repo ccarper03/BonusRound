@@ -31,16 +31,20 @@ public class GameManager : Singleton<GameManager>
     public List<decimal> dividedChestWinningsList = new List<decimal>();
     public int DivideWinningsCounter { get; set; }
     public AudioSource AudioSource { get; private set; }
+    public bool IsBottomPanelOpen { get; set; }
+    public bool IsTopPanelOpen { get; set; }
 
     // Start is called before the first frame update
     void Start()
     {
         AudioSource = GetComponent<AudioSource>();
         denoIndex = 0;
+        numOfChests = 0;
         DivideWinningsCounter = 0;
         currentBalance = 10.00f;
-        denoLbl.text = denoAmt[denoIndex].ToString("C");
         banlanceLbl.text = currentBalance.ToString("C");
+        denoLbl.text = denoAmt[denoIndex].ToString("C");
+        
         EnableBottomPanel();
         ChestManager.Instance.CloseAllChests();
         ChestManager.Instance.DisableAllChests();
@@ -51,13 +55,11 @@ public class GameManager : Singleton<GameManager>
     }
     public void Play()
     {
-        numOfChests = 0;
         denominator = denoAmt[denoIndex];
         ChestManager.Instance.CloseAllChests();
         ChestManager.Instance.DisableAllChests();
         EnableBottomPanel();
         ResetLastWinGameText();
-
 
         if (denoAmt[denoIndex] <= currentBalance) // Check if you have enough in balance for Denomination amount
         {
@@ -67,7 +69,9 @@ public class GameManager : Singleton<GameManager>
             Debug.Log("Denominator: " + denominator);
             Debug.Log("Balance After: " + currentBalance);
             banlanceLbl.text = currentBalance.ToString("C");
-            float randNum = GetRandomValue();
+
+            //float randNum = GetRandomValue();
+            float randNum = .60f;
             if (randNum <= .5f)// 50%
             {
                 Debug.Log("---50%---");
@@ -80,11 +84,10 @@ public class GameManager : Singleton<GameManager>
                 // Output the results
                 DisableBottomPanel();
                 ChestManager.Instance.EnableAllChests();
-                if (ChestManager.Instance.ChestsOpened == 1 && winningTotal == 0)
-                {
+
                     LastGameWinLbl.text = LastGameWinLbl.text = "$0.00";
                     banlanceLbl.text = currentBalance.ToString("C");
-                }
+                
             }
             else if (randNum > .5f && randNum < .8f) // 30% 
             {
@@ -95,7 +98,25 @@ public class GameManager : Singleton<GameManager>
                 // Calculate the values
                 winningTotal = multiplier * denominator;
                 currentBalance += winningTotal;
-                AddWinningTotalsToChests();
+                //AddWinningTotalsToChests();
+
+                decimal howmuchmoneywon = (decimal)winningTotal;
+                decimal numb = 0m;
+                numOfChests = Random.Range(1, 9);
+                List<decimal> dividedChestWinningsList = new List<decimal>();
+                for (int i = 0; i < numOfChests; i++)
+                {
+                    numb = (Mathf.FloorToInt((float)(howmuchmoneywon * 20)) / numOfChests) * 0.05m;
+                    if (i == numOfChests - 1)
+                    {
+                        dividedChestWinningsList.Add(howmuchmoneywon);
+                    }
+                    else
+                    {
+                        dividedChestWinningsList.Add(numb);
+                        howmuchmoneywon -= numb;
+                    }
+                }
 
                 // Output the results
                 Debug.Log("Multiplyer: " + multiplier);
@@ -108,11 +129,6 @@ public class GameManager : Singleton<GameManager>
 
                 DisableBottomPanel();
                 ChestManager.Instance.EnableAllChests();
-                if (ChestManager.Instance.ChestsOpened == numOfChests && winningTotal > 0) 
-                {
-                    LastGameWinLbl.text = winningTotal.ToString("C");
-                    banlanceLbl.text = currentBalance.ToString("C");
-                }
             }
             else if (randNum > .80f && randNum < .95f) // 15%
             {
@@ -135,12 +151,10 @@ public class GameManager : Singleton<GameManager>
                 }
 
                 DisableBottomPanel();
-                ChestManager.Instance.EnableAllChests();
-                if (ChestManager.Instance.ChestsOpened == numOfChests && winningTotal > 0)
-                {
+                ChestManager.Instance.EnableAllChests();                
                     LastGameWinLbl.text = winningTotal.ToString("C");
                     banlanceLbl.text = currentBalance.ToString("C");
-                }
+                
             }
             else if (randNum > .95f) // 5%
             {
@@ -165,22 +179,28 @@ public class GameManager : Singleton<GameManager>
                 
                 DisableBottomPanel();
                 ChestManager.Instance.EnableAllChests();
-                if (ChestManager.Instance.ChestsOpened == numOfChests && winningTotal > 0)
-                {
+
+                
                     LastGameWinLbl.text = winningTotal.ToString("C");
                     banlanceLbl.text = currentBalance.ToString("C");
-                }                
+                            
             }
             Debug.Log("###############################");
         }
     }
 
-    private void AddWinningTotalsToChests()
+    private void DisplayResults()
+    {
+        LastGameWinLbl.text = winningTotal.ToString("C");
+        banlanceLbl.text = currentBalance.ToString("C");
+    }
+
+    void AddWinningTotalsToChests()
     {
         decimal howmuchmoneywon = (decimal)winningTotal;
         decimal numb = 0m;
         numOfChests = Random.Range(1, 9);
-        dividedChestWinningsList.Clear();
+        List<decimal> dividedChestWinningsList = new List<decimal>();
         for (int i = 0; i < numOfChests; i++)
         {
             numb = (Mathf.FloorToInt((float)(howmuchmoneywon * 20)) / numOfChests) * 0.05m;
@@ -247,6 +267,7 @@ public class GameManager : Singleton<GameManager>
     // Function to Enable the bottom Panels, Denominator & PlayButton
     public void EnableBottomPanel()
     {
+        IsBottomPanelOpen = true;
         playBtn.interactable = true;
         DenoSubBtn.interactable = true;
         DenoAddBtn.interactable = true;
@@ -255,6 +276,7 @@ public class GameManager : Singleton<GameManager>
     // Funtion to Disable the Bottom Panels, Denominator & PlayButton
     public void DisableBottomPanel()
     {
+        IsBottomPanelOpen = false;
         playBtn.interactable = false;
         DenoSubBtn.interactable = false;
         DenoAddBtn.interactable = false;
@@ -264,9 +286,9 @@ public class GameManager : Singleton<GameManager>
     // current balance, disables play button if true
     void InsufficientFunds()
     {
-        if (denoAmt[denoIndex] <= currentBalance)
+        if (denoAmt[denoIndex] < currentBalance)
         {
-           // playBtn.interactable = false;
+            playBtn.interactable = false;
         }
     }
 }
