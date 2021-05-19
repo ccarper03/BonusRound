@@ -10,8 +10,62 @@ public class ChestManager :Singleton<ChestManager>
     private Sprite close;
     [SerializeField]
     private Chest[] ChestList;
+    private int counter;
     public int ChestsOpenedCounter { get; set; }
-    public List<decimal> winningsList = (List<decimal>)GameManager.Instance.GetWinningsArray().OrderByDescending(i => i);
+    public List<decimal> winningsList;
+    private void Start()
+    {
+        counter = 0;
+        GameManager.Instance.EnableBottomPanel();
+        winningsList = GameManager.Instance.GetWinningsArray().OrderByDescending(i => i).ToList();
+    } 
+    void Update()
+    {
+        foreach (var chest in ChestList)
+        {
+            if (chest.IsChestPressed)
+            {
+                decimal number = GetNextChestValue();
+                
+                if (number > 1250)
+                {
+                    chest.ChangeChestSprite(Chest.ChestType.OpenXtraLg);
+                    chest.ChangeChestText(number);
+                }
+                else if(number > 625)
+                {
+                    chest.ChangeChestSprite(Chest.ChestType.OpenLg);
+                    chest.ChangeChestText(number);
+                }
+                else if (number > 312)
+                {
+                    chest.ChangeChestSprite(Chest.ChestType.OpenMd);
+                    chest.ChangeChestText(number);
+                }
+                else if (number > 156)
+                {
+                    chest.ChangeChestSprite(Chest.ChestType.OpenSm);
+                    chest.ChangeChestText(number);
+                }
+                else if (number == 0)
+                {
+                    chest.ChangeChestSprite(Chest.ChestType.OpenEmpty);
+                    chest.ChangeChestText(number);
+                }
+                
+
+                if (number == 0)
+                {
+                    // Pooper Found
+                    DisableAllChests(); 
+                    GameManager.Instance.DisplayBalance();
+                    GameManager.Instance.DisplayLastWinText();
+                    CloseAllChests();
+                    GameManager.Instance.EnableBottomPanel();
+                }
+            }
+        }
+    }
     public void DisableAllChests()
     {
         GameManager.Instance.IsTopPanelOpen = false;
@@ -28,80 +82,19 @@ public class ChestManager :Singleton<ChestManager>
             chest.ChestButton.interactable = true;
         }
     }
-
     public void CloseAllChests()
     {
         foreach (var chest in ChestList)
         {
-            chest.ChestImage.sprite = close;
+            chest.ChangeChestSprite(Chest.ChestType.Closed);
             chest.ChestText.text = "";
         }
     }
-
-    public decimal GetNextChestValue()
+    decimal GetNextChestValue()
     {
-        decimal individualChestWinning = winningsList[GameManager.Instance.DivideWinningsCounter];       
+        List<decimal>decimalList = GameManager.Instance.GetWinningsArray();
+        decimal individualChestWinning = decimalList[counter];
+        counter++;
         return individualChestWinning;
     }
-
-    private void Update()
-    {
-        foreach (var chest in ChestList)
-        {
-            if (chest.IsChestPressed)
-            {
-                var number = GetNextChestValue();
-                
-                if (number > 1250)
-                {
-                    chest.ChangeChestSprite(Chest.ChestType.OpenXtraLg);
-                }
-                else if(number > 625)
-                {
-                    chest.ChangeChestSprite(Chest.ChestType.OpenLg);
-                }
-                else if (number > 312)
-                {
-                    chest.ChangeChestSprite(Chest.ChestType.OpenMd);
-                }
-                else if (number > 156)
-                {
-                    chest.ChangeChestSprite(Chest.ChestType.OpenSm);
-                }
-                else if (number == 0)
-                {
-                    chest.ChangeChestSprite(Chest.ChestType.OpenEmpty);
-                }
-                chest.ChangeChestText(number);
-
-                if (number == 0)
-                {
-                    // Pooper Found
-                    DisableAllChests();
-                    DisplayTotalResults();
-
-                    
-                    GameManager.Instance.EnableBottomPanel();
-                }
-            }
-        }
-    }
-
-    private void DisplayTotalResults()
-    {
-        decimal balanceTotal = 0m; 
-        foreach (var item in winningsList)
-        {
-            balanceTotal += item
-        }
-       
-    }
-
-
-
-
-
-
-
-    // GameManager.Instance.dividedChestWinningsList.Clear();
 }
