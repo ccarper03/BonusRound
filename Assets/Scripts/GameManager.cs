@@ -56,11 +56,34 @@ public class GameManager : Singleton<GameManager>
     private int[] winMultiplyerTens = { 12, 16, 24, 32, 48, 64 };
     private int[] winMultiplyerHundreds = { 100, 200, 300, 400, 500 };
     public List<decimal> dividedChestWinningsList = new List<decimal>();
+=======
+    [SerializeField] private Button DenoSubBtn;
+    [SerializeField] private Button DenoAddBtn;
+    private int divideWinningsCounter;
+    public int DivideWinningsCounter
+    {
+        get { return divideWinningsCounter; }
+        set { divideWinningsCounter = value; }
+    }
+    private float currentBalance = 10.00f;
+    private int denoIndex = 0;
+    private float denominator;
+    private int numOfChests;
+    private float winningTotal;
+    private float[] denoAmt = { .25f, .50f, 1.00f, 5.00f };
+    private int multiplier;
+    private int[] winMultiplyerOnes = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    private int[] winMultiplyerTens = { 12, 16, 24, 32, 48, 64 };
+    private int[] winMultiplyerHundreds = { 100, 200, 300, 400, 500 };
+    public List<decimal> dividedChestWinningsList = new List<decimal>();
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
     private AudioSource audioSource;
     public AudioSource AudioSource
     {
         get { return audioSource; }
     }
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
+=======
 >>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
     // Start is called before the first frame update
     void Start()
@@ -77,6 +100,8 @@ public class GameManager : Singleton<GameManager>
         denominationText.text = "$0.25";
         
 =======
+=======
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
         divideWinningsCounter = 0;
         denoLbl.text = denoAmt[denoIndex].ToString("C");
         banlanceLbl.text = currentBalance.ToString("C");
@@ -97,6 +122,9 @@ public class GameManager : Singleton<GameManager>
         EnableBottomPanel();
         ResetLastWinGameText();
         ResetDivideWinningCounter();
+=======
+
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
 
         if (denoAmt[denoIndex] <= currentBalance) // Check if you have enough in balance for Denomination amount
         {
@@ -109,6 +137,8 @@ public class GameManager : Singleton<GameManager>
             //float randNum = GetRandomValue();
             float randNum = .60f;
 =======
+=======
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
             banlanceLbl.text = currentBalance.ToString("C");
             float randNum = GetRandomValue();
 >>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
@@ -129,6 +159,8 @@ public class GameManager : Singleton<GameManager>
                 balanceText.text = currentBalance.ToString("C");
                 
 =======
+=======
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
                 if (ChestManager.Instance.chestsOpened == 1 && winningTotal == 0)
                 {
                     LastGameWinLbl.text = LastGameWinLbl.text = "$0.00";
@@ -175,6 +207,8 @@ public class GameManager : Singleton<GameManager>
                 {
                     Debug.Log("Chest List: " + chestAmt);
 =======
+=======
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
                 DisableBottomPanel();
                 ChestManager.Instance.EnableAllChests();
                 if (ChestManager.Instance.chestsOpened == numOfChests)
@@ -204,6 +238,8 @@ public class GameManager : Singleton<GameManager>
                 {
                     Debug.Log("Chest List: " + chestAmt);
 =======
+=======
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
                 DisableBottomPanel();
                 ChestManager.Instance.EnableAllChests();
                 if (ChestManager.Instance.chestsOpened == numOfChests)
@@ -233,12 +269,16 @@ public class GameManager : Singleton<GameManager>
                 {
                     Debug.Log("Chest List: " + chestAmt);
 =======
+=======
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
                 DisableBottomPanel();
                 ChestManager.Instance.EnableAllChests();
                 if (ChestManager.Instance.chestsOpened == numOfChests)
                 {
                     LastGameWinLbl.text = winningTotal.ToString("C");
                     banlanceLbl.text = currentBalance.ToString("C");
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
+=======
 >>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
                 }
             }
@@ -367,6 +407,13 @@ public class GameManager : Singleton<GameManager>
         {
 <<<<<<< HEAD
             //playBtn.interactable = false;
+=======
+            playBtn.interactable = true;
+        }
+        else
+        {
+            playBtn.interactable = false;
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
 =======
             playBtn.interactable = true;
         }

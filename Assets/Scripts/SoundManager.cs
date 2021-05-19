@@ -22,6 +22,8 @@ public class SoundManager : Singleton<SoundManager>
     public AudioClip Pooper => pooper;
     public AudioClip Whoa => whoa;
 =======
+=======
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
     [SerializeField] private AudioClip highClick;
     public AudioClip IncreaseClick 
     {
@@ -34,5 +36,7 @@ public class SoundManager : Singleton<SoundManager>
         get { return lowClick; }
     }
 
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
+=======
 >>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
 }

@@ -99,6 +99,7 @@ public class Chest : MonoBehaviour
         ChestText.text = value.ToString("C");
     }
 =======
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
         
         List<decimal> winningsArray = GameManager.Instance.GetWinningsArray();
         decimal winningAmt = winningsArray[GameManager.Instance.DivideWinningsCounter];
