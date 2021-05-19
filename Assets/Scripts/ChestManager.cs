@@ -11,6 +11,7 @@ public class ChestManager :Singleton<ChestManager>
     [SerializeField]
     private Chest[] ChestList;
 <<<<<<< HEAD
+<<<<<<< HEAD
     private int counter;
     public int ChestsOpenedCounter { get; set; }
     public List<decimal> winningsList;
@@ -67,6 +68,9 @@ public class ChestManager :Singleton<ChestManager>
             }
         }
     }
+    public int chestsOpened;
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
+=======
     public int chestsOpened;
 >>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
 =======

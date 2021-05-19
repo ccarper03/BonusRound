@@ -43,6 +43,7 @@ public class Chest : MonoBehaviour
     public void ChangeChestSprite(ChestType Type)
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
         switch (Type)
         {
             case ChestType.Closed:
@@ -98,6 +99,8 @@ public class Chest : MonoBehaviour
     {
         ChestText.text = value.ToString("C");
     }
+=======
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
 =======
 >>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
         
