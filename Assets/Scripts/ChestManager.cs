@@ -10,6 +10,7 @@ public class ChestManager :Singleton<ChestManager>
     private Sprite close;
     [SerializeField]
     private Chest[] ChestList;
+<<<<<<< HEAD
     private int counter;
     public int ChestsOpenedCounter { get; set; }
     public List<decimal> winningsList;
@@ -66,6 +67,9 @@ public class ChestManager :Singleton<ChestManager>
             }
         }
     }
+=======
+    public int chestsOpened;
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
     public void DisableAllChests()
     {
         GameManager.Instance.IsTopPanelOpen = false;

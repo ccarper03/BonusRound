@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -43,6 +42,7 @@ public class Chest : MonoBehaviour
     }
     public void ChangeChestSprite(ChestType Type)
     {
+<<<<<<< HEAD
         switch (Type)
         {
             case ChestType.Closed:
@@ -98,4 +98,50 @@ public class Chest : MonoBehaviour
     {
         ChestText.text = value.ToString("C");
     }
+=======
+        
+        List<decimal> winningsArray = GameManager.Instance.GetWinningsArray();
+        decimal winningAmt = winningsArray[GameManager.Instance.DivideWinningsCounter];
+        if (winningAmt == 0)
+        {
+            chestImage.sprite = openEmpty;
+            chestButton.interactable = false;
+            GameManager.Instance.dividedChestWinningsList.Clear();
+            ChestManager.Instance.DisableAllChests();
+            GameManager.Instance.EnableBottomPanel();
+        }
+        if (winningAmt < .25m || Input.GetKeyDown(KeyCode.Q))
+        {
+            chestImage.sprite = openEmpty;
+            chestButton.interactable = false;
+            ChestManager.Instance.chestsOpened++;
+        }
+        else if (winningAmt > 500m || Input.GetKeyDown(KeyCode.W))
+        {
+            chestImage.sprite = openXtraLg;
+            chestButton.interactable = false;
+            ChestManager.Instance.chestsOpened++;
+        }
+        else if (winningAmt > 60m || Input.GetKeyDown(KeyCode.E))
+        {
+            chestImage.sprite = openLg;
+            chestButton.interactable = false;
+            ChestManager.Instance.chestsOpened++;
+        }
+        else if (winningAmt > 5m || Input.GetKeyDown(KeyCode.R))
+        {
+            chestImage.sprite = openMd;
+            chestButton.interactable = false;
+            ChestManager.Instance.chestsOpened++;
+        }
+        else if (winningAmt > .24m || Input.GetKeyDown(KeyCode.T))
+        {
+            chestImage.sprite = openSm;
+            chestButton.interactable = false;
+            ChestManager.Instance.chestsOpened++;
+        }
+        winningText.text = winningAmt.ToString("C");
+        GameManager.Instance.DivideWinningsCounter++;
+    } 
+>>>>>>> parent of 7f8585f (added some sounds, working on a bug it the Chest class.)
 }
