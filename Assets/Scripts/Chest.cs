@@ -41,7 +41,7 @@ public class Chest : MonoBehaviour
         List<decimal> winningsArray = GameManager.Instance.GetWinningsArray();
         ChestManager.Instance.cMax = winningsArray.Count;
         winningAmt = winningsArray[GameManager.Instance.DivideWinningsCounter];
-        if (winningAmt > 2000m)
+        if (winningAmt > 400m)
         {
             chestImage.sprite = openXtraLg;
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Hooray);
@@ -50,7 +50,7 @@ public class Chest : MonoBehaviour
             winningText.text = winningAmt.ToString("C");
             GameManager.Instance.DivideWinningsCounter++;
         }
-        else if (winningAmt > 1500m)
+        else if (winningAmt > 200m)
         {
             chestImage.sprite = openLg;
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Whoa);
@@ -59,7 +59,7 @@ public class Chest : MonoBehaviour
             winningText.text = winningAmt.ToString("C");
             GameManager.Instance.DivideWinningsCounter++;
         }
-        else if (winningAmt > 1000m)
+        else if (winningAmt > 100m)
         {
             chestImage.sprite = openMd;
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Alright);
