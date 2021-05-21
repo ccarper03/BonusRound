@@ -10,6 +10,8 @@ public class ChestManager :Singleton<ChestManager>
     [SerializeField]
     private Chest[] ChestList;
     public int chestsOpened;
+    public int cOpened = 0;
+    public int cMax = 9;
     public void DisableAllChests()
     {
         foreach (var chest in ChestList)

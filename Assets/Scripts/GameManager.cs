@@ -15,11 +15,7 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private Button DenoSubBtn;
     [SerializeField] private Button DenoAddBtn;
     private int divideWinningsCounter;
-    public int DivideWinningsCounter
-    {
-        get { return divideWinningsCounter; }
-        set { divideWinningsCounter = value; }
-    }
+    public int DivideWinningsCounter { get; set; }
     private decimal currentBalance = 10.00m;
     private int denoIndex = 0;
     private decimal denominator;
@@ -32,6 +28,8 @@ public class GameManager : Singleton<GameManager>
     private int[] winMultiplyerHundreds = { 100, 200, 300, 400, 500 };
     public List<decimal> dividedChestWinningsList = new List<decimal>();
     private AudioSource audioSource;
+    private bool hasShowResults;
+
     public AudioSource AudioSource
     {
         get { return audioSource; }
@@ -42,18 +40,29 @@ public class GameManager : Singleton<GameManager>
         audioSource = GetComponent<AudioSource>();
         denoIndex = 0;
         divideWinningsCounter = 0;
+        currentBalance = 10m;
         denoText.text = denoAmt[denoIndex].ToString("C");
         banlanceText.text = currentBalance.ToString("C");
         EnableBottomPanel();
         ChestManager.Instance.CloseAllChests();
         ChestManager.Instance.DisableAllChests();
     }
-    private void Update()
+    void Update()
     {
-        // InsufficientFunds();
+        if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax && hasShowResults == false)
+        {
+
+            LastGameWinText.text = winningTotal.ToString("C");
+            banlanceText.text = currentBalance.ToString("C");
+            Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
+            hasShowResults = true;
+        }
     }
+        // InsufficientFunds();
+    
     public void Play()
     {
+        hasShowResults = false;
         Debug.Log("++++++++++++++++++ Start +++++++++++++++++++++++");
         numOfChests = 0;
         denominator = denoAmt[denoIndex];
@@ -74,7 +83,7 @@ public class GameManager : Singleton<GameManager>
             
             float randNum = GetRandomValue();
             
-            randNum = .4f;
+            randNum = .6f;
             Debug.Log("Random Num: " + randNum);
             if (randNum <= .5f)// 50%
             {
@@ -82,11 +91,11 @@ public class GameManager : Singleton<GameManager>
                 Debug.Log("---50%---");
                 // Get input 
                 multiplier = 0;
-                Debug.Log("Multiplier: " + multiplier);
-                // Calculate the values
-                // Nothing to calculate
+                
 
+                // Calculate the values
                 winningTotal = multiplier * denominator;
+                Debug.Log("Winning Total " + winningTotal + "Multiplier " + multiplier + " X " +"Demonimator"+ denominator);
                 currentBalance += winningTotal;
 
                 decimal howmuchmoneywon = (decimal)winningTotal;
@@ -112,36 +121,45 @@ public class GameManager : Singleton<GameManager>
                     Debug.Log(item + " Divided Amount");
                 }
                 // Output the results
-                Debug.Log("Displaying Results");
                 DisableBottomPanel();
                 ChestManager.Instance.EnableAllChests();
-                if (ChestManager.Instance.chestsOpened == 1 && winningTotal == 0)
-                {
-                    LastGameWinText.text = LastGameWinText.text = "$0.00";
-                    banlanceText.text = currentBalance.ToString("C");
-                }
-                banlanceText.text = currentBalance.ToString("C");
-                Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
             }
             else if (randNum > .5f && randNum < .8f) // 30% 
             {
-                Debug.Log(randNum + " 30%");
+                Debug.Log("---30%---");
                 // Get input 
                 multiplier = winMultiplyerOnes[Random.Range(0, 10)];
 
                 // Calculate the values
                 winningTotal = multiplier * denominator;
+                Debug.Log("Winning Total " + winningTotal + "Multiplier " + multiplier + " X " + "Demonimator" + denominator);
                 currentBalance += winningTotal;
-                AddWinningTotalsToChests();
 
+                decimal howmuchmoneywon = (decimal)winningTotal;
+                decimal numb = 0m;
+                numOfChests = Random.Range(1, 9);
+                dividedChestWinningsList.Clear();
+                for (int i = 0; i < numOfChests; i++)
+                {
+                    numb = (Mathf.FloorToInt((float)(howmuchmoneywon * 20)) / numOfChests) * 0.05m;
+                    if (i == numOfChests - 1)
+                    {
+                        dividedChestWinningsList.Add(howmuchmoneywon);
+                    }
+                    else
+                    {
+                        dividedChestWinningsList.Add(numb);
+                        howmuchmoneywon -= numb;
+                    }
+                }
+                dividedChestWinningsList.Add(.000m); // adding one more for a pooper
+                foreach (var item in dividedChestWinningsList)
+                {
+                    Debug.Log(item + " Divided Amount");
+                }
                 // Output the results
                 DisableBottomPanel();
                 ChestManager.Instance.EnableAllChests();
-                if (ChestManager.Instance.chestsOpened == numOfChests)
-                {
-                    LastGameWinText.text = winningTotal.ToString("C");
-                    banlanceText.text = currentBalance.ToString("C");
-                }
             }
             else if (randNum > .80f && randNum < .95f) // 15%
             {
@@ -214,7 +232,7 @@ public class GameManager : Singleton<GameManager>
 
     private void ResetDivideWinningCounter()
     {
-        divideWinningsCounter = 0;
+        DivideWinningsCounter = 0;
     }
 
     private void ResetLastWinGameText()
@@ -247,18 +265,10 @@ public class GameManager : Singleton<GameManager>
     // Send the List
     public List<decimal> GetWinningsArray()
     {
-        while (dividedChestWinningsList.Count < 9)
-        {
-            AddZeroEndofList();
-        }
         return dividedChestWinningsList;
     }
     
-    // Add Zeros to the remaining positions of the list
-    void  AddZeroEndofList()
-    {
-        dividedChestWinningsList.Add(0m);
-    }
+
     
     // Function to Enable the bottom Panels, Denominator & PlayButton
     public void EnableBottomPanel()
