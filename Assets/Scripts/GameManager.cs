@@ -29,6 +29,13 @@ public class GameManager : Singleton<GameManager>
     private AudioSource audioSource;
     private bool hasShowResults;
 
+    public decimal animationTime = 1.5m;
+    private decimal desiredWinTotNumber;
+    private decimal initialWinTotNumber;
+    private decimal currentWinTotNumber;
+    private decimal desiredCurBalNumber;
+    private decimal initialCurBalNumber;
+    private decimal currentCurBalNumber;
     public AudioSource AudioSource
     {
         get { return audioSource; }
@@ -49,12 +56,18 @@ public class GameManager : Singleton<GameManager>
     {
         if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax && hasShowResults == false)
         {
+            hasShowResults = true;
 
             LastGameWinText.text = winningTotal.ToString("C");
             banlanceText.text = currentBalance.ToString("C");
             Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
-            hasShowResults = true;
         }
+
+        if (currentBalance < denoAmt[denoIndex])
+        {
+            ChestManager.Instance.CloseAllChests();
+            ChestManager.Instance.DisableAllChests();
+        } 
     }
         // InsufficientFunds();
     
@@ -80,7 +93,7 @@ public class GameManager : Singleton<GameManager>
             banlanceText.text = currentBalance.ToString("C");
             
             float randNum = GetRandomValue();
-            randNum = .96f;
+            //randNum = .6f;
             Debug.Log("Random Num: " + randNum);
             if (randNum <= .5f) // 50%
             {
@@ -255,7 +268,16 @@ public class GameManager : Singleton<GameManager>
             }
         }
     }
-
+    public void SetNumber(decimal value)
+    {
+        initialWinTotNumber = currentWinTotNumber;
+        desiredWinTotNumber = value;
+    }
+    public void AddBalNumber(decimal value)
+    {
+        initialWinTotNumber = currentWinTotNumber;
+        desiredWinTotNumber += value;
+    }
     private static float GetRandomValue()
     {
         return Random.value;
