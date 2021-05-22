@@ -48,8 +48,14 @@ public class Chest : MonoBehaviour
             chestImage.sprite = openXtraLg;
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Hooray);
             chestButton.interactable = false;
-            ChestManager.Instance.cOpened++;
             winningText.text = winningAmt.ToString("C");
+            if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax)
+            {
+                GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
+                GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
+                Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
+            }
+            ChestManager.Instance.cOpened++;
             GameManager.Instance.DivideWinningsCounter++;
         }
         else if (winningAmt > 200m)
@@ -57,8 +63,14 @@ public class Chest : MonoBehaviour
             chestImage.sprite = openLg;
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Whoa);
             chestButton.interactable = false;
-            ChestManager.Instance.cOpened++;
             winningText.text = winningAmt.ToString("C");
+            if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax)
+            {
+                GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
+                GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
+                Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
+            }
+            ChestManager.Instance.cOpened++;
             GameManager.Instance.DivideWinningsCounter++;
         }
         else if (winningAmt > 100m)
@@ -66,8 +78,14 @@ public class Chest : MonoBehaviour
             chestImage.sprite = openMd;
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Alright);
             chestButton.interactable = false;
-            ChestManager.Instance.cOpened++;
             winningText.text = winningAmt.ToString("C");
+            if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax)
+            {
+                GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
+                GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
+                Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
+            }
+            ChestManager.Instance.cOpened++;
             GameManager.Instance.DivideWinningsCounter++;
         }
         else if (winningAmt > .05m)
@@ -75,8 +93,14 @@ public class Chest : MonoBehaviour
             chestImage.sprite = openSm;
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Nice);
             chestButton.interactable = false;
-            ChestManager.Instance.cOpened++;
             winningText.text = winningAmt.ToString("C");
+            if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax)
+            {
+                GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
+                GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
+                Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
+            }
+            ChestManager.Instance.cOpened++;
             GameManager.Instance.DivideWinningsCounter++;
         }
         else
@@ -85,9 +109,12 @@ public class Chest : MonoBehaviour
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Wrong);
             chestButton.interactable = false;
             GameManager.Instance.dividedChestWinningsList.Clear();
-            ChestManager.Instance.cOpened++;
             ChestManager.Instance.DisableAllChests();
             GameManager.Instance.EnableBottomPanel();
+            GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
+            GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
+            Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
+            ChestManager.Instance.cOpened = 0;
         }
     } 
 }

@@ -12,6 +12,7 @@ public class SoundManager : Singleton<SoundManager>
     [SerializeField] private AudioClip nice;
     [SerializeField] private AudioClip whoa;
     [SerializeField] private AudioClip wrong;
+    [SerializeField] private AudioClip playClick;
     public AudioClip IncreaseClick => highClick;
     public AudioClip DecreaseClick => lowClick;
     public AudioClip Alright => alright;
@@ -20,5 +21,6 @@ public class SoundManager : Singleton<SoundManager>
     public AudioClip Nice => nice;
     public AudioClip Whoa => whoa;
     public AudioClip Wrong => wrong;
+    public AudioClip PlayClick => playClick;
 
 }

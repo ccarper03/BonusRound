@@ -8,18 +8,18 @@ using System.Linq;
 
 public class GameManager : Singleton<GameManager>
 {
-    [SerializeField] private Text LastGameWinText;
-    [SerializeField] private Text banlanceText;
+    [SerializeField] public Text LastGameWinText;
+    [SerializeField] public Text banlanceText;
     [SerializeField] private Text denoText;
     [SerializeField] private Button playBtn;
     [SerializeField] private Button DenoSubBtn;
     [SerializeField] private Button DenoAddBtn;
     public int DivideWinningsCounter { get; set; }
-    private decimal currentBalance = 10.00m;
+    public decimal currentBalance = 10.00m;
     private int denoIndex = 0;
     private decimal denominator;
     private int numOfChests;
-    private decimal winningTotal;
+    public decimal winningTotal;
     private decimal[] denoAmt = { .25m, .50m, 1.00m, 5.00m };
     private int multiplier;
     private int[] winMultiplyerOnes = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -54,14 +54,6 @@ public class GameManager : Singleton<GameManager>
     }
     void Update()
     {
-        if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax && hasShowResults == false)
-        {
-            hasShowResults = true;
-
-            LastGameWinText.text = winningTotal.ToString("C");
-            banlanceText.text = currentBalance.ToString("C");
-            Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
-        }
 
         if (currentBalance < denoAmt[denoIndex])
         {
@@ -73,6 +65,7 @@ public class GameManager : Singleton<GameManager>
     
     public void Play()
     {
+        Instance.AudioSource.PlayOneShot(SoundManager.Instance.PlayClick);
         hasShowResults = false;
         Debug.Log("++++++++++++++++++ Start +++++++++++++++++++++++");
         numOfChests = 0;
