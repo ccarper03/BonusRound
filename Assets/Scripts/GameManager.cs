@@ -27,15 +27,7 @@ public class GameManager : Singleton<GameManager>
     private int[] winMultiplyerHundreds = { 100, 200, 300, 400, 500 };
     public List<decimal> dividedChestWinningsList = new List<decimal>();
     private AudioSource audioSource;
-    private bool hasShowResults;
 
-    public decimal animationTime = 1.5m;
-    private decimal desiredWinTotNumber;
-    private decimal initialWinTotNumber;
-    private decimal currentWinTotNumber;
-    private decimal desiredCurBalNumber;
-    private decimal initialCurBalNumber;
-    private decimal currentCurBalNumber;
     public AudioSource AudioSource
     {
         get { return audioSource; }
@@ -66,7 +58,6 @@ public class GameManager : Singleton<GameManager>
     public void Play()
     {
         Instance.AudioSource.PlayOneShot(SoundManager.Instance.PlayClick);
-        hasShowResults = false;
         Debug.Log("++++++++++++++++++ Start +++++++++++++++++++++++");
         numOfChests = 0;
         denominator = denoAmt[denoIndex];
@@ -260,16 +251,6 @@ public class GameManager : Singleton<GameManager>
                 howmuchmoneywon -= numb;
             }
         }
-    }
-    public void SetNumber(decimal value)
-    {
-        initialWinTotNumber = currentWinTotNumber;
-        desiredWinTotNumber = value;
-    }
-    public void AddBalNumber(decimal value)
-    {
-        initialWinTotNumber = currentWinTotNumber;
-        desiredWinTotNumber += value;
     }
     private static float GetRandomValue()
     {
