@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SoundManager : Singleton<SoundManager>
 {
+    [SerializeField] private AudioClip money;
     [SerializeField] private AudioClip highClick;
     [SerializeField] private AudioClip lowClick;
     [SerializeField] private AudioClip alright;
@@ -13,6 +14,7 @@ public class SoundManager : Singleton<SoundManager>
     [SerializeField] private AudioClip whoa;
     [SerializeField] private AudioClip wrong;
     [SerializeField] private AudioClip playClick;
+    public AudioClip Money => money;
     public AudioClip IncreaseClick => highClick;
     public AudioClip DecreaseClick => lowClick;
     public AudioClip Alright => alright;

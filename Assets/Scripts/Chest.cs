@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +16,8 @@ public class Chest : MonoBehaviour
     [SerializeField] public Text winningText;
     [SerializeField] private Image chestImage;
     [SerializeField] private Button chestButton;
-
+    public bool isCoinAnimDone = false;
+    public GameObject coinPrefab;
     private decimal winningAmount;
     private bool doneDoingTask;
     private IEnumerator coroutine;
@@ -32,7 +32,7 @@ public class Chest : MonoBehaviour
 
     private void Start()
     {
-        doneDoingTask = true;
+        isCoinAnimDone = false;
         chestButton.onClick.AddListener(OpenChest);
     }
     private void OnDestroy()
@@ -41,106 +41,117 @@ public class Chest : MonoBehaviour
     }
     private void Update()
     {
-        if (!doneDoingTask)
-        {
-            return;
-        }
+
     }
     public void OpenChest()
     {
-
-        StartCoroutine("AnticipationMoment");
+        StartCoroutine("OpenChestLogic");
     } 
-    IEnumerator AnticipationMoment()
+    IEnumerator OpenChestLogic()
     {
         decimal winningAmt = .000m;
         List<decimal> winningsArray = GameManager.Instance.GetWinningsArray();
         ChestManager.Instance.cMax = winningsArray.Count;
         winningAmt = winningsArray[GameManager.Instance.DivideWinningsCounter];
-
-       
         if (winningAmt > 200m)
         {
+            gameObject.GetComponent<Animator>().speed = 0;
+            chestButton.interactable = false;
             chestImage.sprite = openXtraLg;
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Hooray);
-            chestButton.interactable = false;
             winningText.text = winningAmt.ToString("C");
-            if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax)
-            {
-                yield return new WaitForSecondsRealtime(2f);
-                GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
-                yield return new WaitForSecondsRealtime(2f);
-                GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
-                Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
-            }
-            ChestManager.Instance.cOpened++;
             GameManager.Instance.DivideWinningsCounter++;
         }
         else if (winningAmt > 100m)
         {
+            gameObject.GetComponent<Animator>().speed = 0;
+            chestButton.interactable = false;
             chestImage.sprite = openLg;
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Whoa);
-            chestButton.interactable = false;
             winningText.text = winningAmt.ToString("C");
-            if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax)
-            {
-                yield return new WaitForSecondsRealtime(2f);
-                GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
-                yield return new WaitForSecondsRealtime(2f);
-                GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
-                Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
-            }
-            ChestManager.Instance.cOpened++;
             GameManager.Instance.DivideWinningsCounter++;
         }
         else if (winningAmt > 50m)
         {
+            gameObject.GetComponent<Animator>().speed = 0;
+            chestButton.interactable = false;
             chestImage.sprite = openMd;
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Alright);
-            chestButton.interactable = false;
             winningText.text = winningAmt.ToString("C");
-            if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax)
-            {
-                yield return new WaitForSecondsRealtime(2f);
-                GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
-                yield return new WaitForSecondsRealtime(2f);
-                GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
-                Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
-            }
-            ChestManager.Instance.cOpened++;
             GameManager.Instance.DivideWinningsCounter++;
         }
         else if (winningAmt > .05m)
         {
+            gameObject.GetComponent<Animator>().speed = 0;
+            chestButton.interactable = false;
             chestImage.sprite = openSm;
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Nice);
-            chestButton.interactable = false;
             winningText.text = winningAmt.ToString("C");
-            if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax)
-            {
-                yield return new WaitForSecondsRealtime(2f);
-                GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
-                yield return new WaitForSecondsRealtime(2f);
-                GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
-                Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
-            }
-            ChestManager.Instance.cOpened++;
             GameManager.Instance.DivideWinningsCounter++;
         }
-        else
+        else if(winningAmt == .000m )
         {
+            gameObject.GetComponent<Animator>().speed = 0;
+            chestButton.interactable = false;
+            ChestManager.Instance.DisableAllChests();
+            GameManager.Instance.DisableBottomPanel();
             chestImage.sprite = pooper;
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Wrong);
-            chestButton.interactable = false;
-            GameManager.Instance.dividedChestWinningsList.Clear();
-            ChestManager.Instance.DisableAllChests();
+            //GameManager.Instance.dividedChestWinningsList.Clear();
+            StartCoroutine("LastWonAmountUpdater");
+            StartCoroutine("CoinAnimation");
+            StartCoroutine("BalUpdater");
+            yield return new WaitUntil(() => isCoinAnimDone == true);
             GameManager.Instance.EnableBottomPanel();
-            yield return new WaitForSecondsRealtime(2f);
-            GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
-            yield return new WaitForSecondsRealtime(2f);
-            GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
             Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
-            ChestManager.Instance.cOpened = 0;
         }
     }
+
+    public IEnumerator CoinAnimation()
+    {
+        isCoinAnimDone = false;
+        for (int i = 0; i < GameManager.Instance.winningTotal; i++)
+        {
+            GameObject newGo = Instantiate(coinPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            newGo.GetComponent<CoinManager>().Despawn(1f);
+            GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Money);
+            yield return new WaitForSeconds(0.03f);
+        }
+        isCoinAnimDone = true;
+        
+    }
+
+    public IEnumerator BalUpdater()
+    {
+        decimal start = GameManager.Instance.currentBalance;
+        decimal target = GameManager.Instance.currentBalance + GameManager.Instance.winningTotal;
+        GameManager.Instance.currentBalance += GameManager.Instance.winningTotal;
+        while (true)
+        {
+            if (start < target)
+            {
+                start++; 
+                GameManager.Instance.banlanceText.text = start.ToString("C"); 
+            }
+            yield return new WaitForSeconds(0.03f);
+        }
+    }
+
+    public IEnumerator LastWonAmountUpdater()
+    {
+        decimal start = 0;
+        decimal target = GameManager.Instance.winningTotal;
+        GameManager.Instance.DisableBottomPanel();
+        while (true)
+        {
+            if (start < target)
+            {
+                start++; 
+                GameManager.Instance.LastGameWinText.text = start.ToString("C"); //Write it to the UI
+            }
+            yield return new WaitForSeconds(0.03f); // I used .2 secs but you can update it as fast as you want
+        }
+        
+    }
+
 }

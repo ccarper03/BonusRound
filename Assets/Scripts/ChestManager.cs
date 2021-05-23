@@ -36,4 +36,19 @@ public class ChestManager :Singleton<ChestManager>
             chest.winningText.text = "";
         }
     }
+
+    public void PauseAllChestsAnimations()
+    {
+        foreach (var chest in ChestList)
+        {
+            chest.GetComponent<Animator>().speed = 0;
+        }
+    }
+    public void PlayAllChestsAnimations()
+    {
+        foreach (var chest in ChestList)
+        {
+            chest.GetComponent<Animator>().speed = 1;
+        }
+    }
 }

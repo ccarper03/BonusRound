@@ -14,6 +14,8 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private Button playBtn;
     [SerializeField] private Button DenoSubBtn;
     [SerializeField] private Button DenoAddBtn;
+    public GameObject RulesPanel;
+
     public int DivideWinningsCounter { get; set; }
     public decimal currentBalance = 10.00m;
     private int denoIndex = 0;
@@ -35,12 +37,13 @@ public class GameManager : Singleton<GameManager>
     // Start is called before the first frame update
     void Start()
     {
+        DisplayRules();
         audioSource = GetComponent<AudioSource>();
         denoIndex = 0;
         currentBalance = 10m;
         denoText.text = denoAmt[denoIndex].ToString("C");
         banlanceText.text = currentBalance.ToString("C");
-        EnableBottomPanel();
+        DisableBottomPanel();
         ChestManager.Instance.CloseAllChests();
         ChestManager.Instance.DisableAllChests();
     }
@@ -61,6 +64,7 @@ public class GameManager : Singleton<GameManager>
         Debug.Log("++++++++++++++++++ Start +++++++++++++++++++++++");
         numOfChests = 0;
         denominator = denoAmt[denoIndex];
+        RulesPanel = GetComponent<GameObject>();
         ChestManager.Instance.CloseAllChests();
         ChestManager.Instance.DisableAllChests();
         EnableBottomPanel();
@@ -77,7 +81,7 @@ public class GameManager : Singleton<GameManager>
             banlanceText.text = currentBalance.ToString("C");
             
             float randNum = GetRandomValue();
-            //randNum = .6f;
+            //randNum = .96f;
             Debug.Log("Random Num: " + randNum);
             if (randNum <= .5f) // 50%
             {
@@ -127,7 +131,7 @@ public class GameManager : Singleton<GameManager>
                 // Calculate the values
                 winningTotal = multiplier * denominator;
                 Debug.Log("Winning Total " + winningTotal + "Multiplier " + multiplier + " X " + "Demonimator" + denominator);
-                currentBalance += winningTotal;
+                //currentBalance += winningTotal;
 
                 decimal howmuchmoneywon = (decimal)winningTotal;
                 decimal numb = 0m;
@@ -164,7 +168,7 @@ public class GameManager : Singleton<GameManager>
                 // Calculate the values
                 winningTotal = multiplier * denominator;
                 Debug.Log("Winning Total " + winningTotal + "Multiplier " + multiplier + " X " + "Demonimator" + denominator);
-                currentBalance += winningTotal;
+                //currentBalance += winningTotal;
 
                 decimal howmuchmoneywon = (decimal)winningTotal;
                 decimal numb = 0m;
@@ -201,7 +205,7 @@ public class GameManager : Singleton<GameManager>
                 // Calculate the values
                 winningTotal = multiplier * denominator;
                 Debug.Log("Winning Total " + winningTotal + "Multiplier " + multiplier + " X " + "Demonimator" + denominator);
-                currentBalance += winningTotal;
+                //currentBalance += winningTotal;
 
                 decimal howmuchmoneywon = (decimal)winningTotal;
                 decimal numb = 0m;
@@ -264,7 +268,8 @@ public class GameManager : Singleton<GameManager>
 
     private void ResetLastWinGameText()
     {
-        LastGameWinText.text = "$0.00";
+        Instance.winningTotal = 0; 
+        LastGameWinText.text = Instance.winningTotal.ToString("C");
     }
 
     // Add Denomination Button
@@ -300,6 +305,7 @@ public class GameManager : Singleton<GameManager>
     // Function to Enable the bottom Panels, Denominator & PlayButton
     public void EnableBottomPanel()
     {
+        ChestManager.Instance.PauseAllChestsAnimations();
         playBtn.interactable = true;
         DenoSubBtn.interactable = true;
         DenoAddBtn.interactable = true;
@@ -308,6 +314,7 @@ public class GameManager : Singleton<GameManager>
     // Funtion to Disable the Bottom Panels, Denominator & PlayButton
     public void DisableBottomPanel()
     {
+        ChestManager.Instance.PlayAllChestsAnimations();
         playBtn.interactable = false;
         DenoSubBtn.interactable = false;
         DenoAddBtn.interactable = false;
@@ -325,5 +332,19 @@ public class GameManager : Singleton<GameManager>
         {
             playBtn.interactable = false;
         }
+    }
+
+    public void DisplayRules()
+    {
+        Debug.Log("inside");
+        RulesPanel.gameObject.SetActive(true);
+    }
+    public void RulesOk()
+    {
+        Debug.Log("trying to get out.");
+        RulesPanel = GameObject.Find("Rules");
+        Instance.EnableBottomPanel();
+        RulesPanel.SetActive(false);
+        
     }
 }
