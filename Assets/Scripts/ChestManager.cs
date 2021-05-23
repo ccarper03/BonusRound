@@ -19,6 +19,7 @@ public class ChestManager :Singleton<ChestManager>
             chest.ChestButton.interactable = false;
         }
     }
+
     public void EnableAllChests()
     {
         foreach (var chest in ChestList)

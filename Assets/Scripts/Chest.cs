@@ -19,6 +19,8 @@ public class Chest : MonoBehaviour
     [SerializeField] private Button chestButton;
 
     private decimal winningAmount;
+    private bool doneDoingTask;
+    private IEnumerator coroutine;
     public Button ChestButton => chestButton;
     public Chest ChestObject => chestObject;
     public Image ChestImage => chestImage;
@@ -30,20 +32,34 @@ public class Chest : MonoBehaviour
 
     private void Start()
     {
+        doneDoingTask = true;
         chestButton.onClick.AddListener(OpenChest);
     }
     private void OnDestroy()
     {
         chestButton.onClick.RemoveListener(OpenChest);
     }
-
+    private void Update()
+    {
+        if (!doneDoingTask)
+        {
+            return;
+        }
+    }
     public void OpenChest()
+    {
+
+        StartCoroutine("AnticipationMoment");
+    } 
+    IEnumerator AnticipationMoment()
     {
         decimal winningAmt = .000m;
         List<decimal> winningsArray = GameManager.Instance.GetWinningsArray();
         ChestManager.Instance.cMax = winningsArray.Count;
         winningAmt = winningsArray[GameManager.Instance.DivideWinningsCounter];
-        if (winningAmt > 400m)
+
+       
+        if (winningAmt > 200m)
         {
             chestImage.sprite = openXtraLg;
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Hooray);
@@ -51,22 +67,9 @@ public class Chest : MonoBehaviour
             winningText.text = winningAmt.ToString("C");
             if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax)
             {
+                yield return new WaitForSecondsRealtime(2f);
                 GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
-                GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
-                Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
-            }
-            ChestManager.Instance.cOpened++;
-            GameManager.Instance.DivideWinningsCounter++;
-        }
-        else if (winningAmt > 200m)
-        {
-            chestImage.sprite = openLg;
-            GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Whoa);
-            chestButton.interactable = false;
-            winningText.text = winningAmt.ToString("C");
-            if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax)
-            {
-                GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
+                yield return new WaitForSecondsRealtime(2f);
                 GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
                 Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
             }
@@ -75,13 +78,32 @@ public class Chest : MonoBehaviour
         }
         else if (winningAmt > 100m)
         {
+            chestImage.sprite = openLg;
+            GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Whoa);
+            chestButton.interactable = false;
+            winningText.text = winningAmt.ToString("C");
+            if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax)
+            {
+                yield return new WaitForSecondsRealtime(2f);
+                GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
+                yield return new WaitForSecondsRealtime(2f);
+                GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
+                Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
+            }
+            ChestManager.Instance.cOpened++;
+            GameManager.Instance.DivideWinningsCounter++;
+        }
+        else if (winningAmt > 50m)
+        {
             chestImage.sprite = openMd;
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Alright);
             chestButton.interactable = false;
             winningText.text = winningAmt.ToString("C");
             if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax)
             {
+                yield return new WaitForSecondsRealtime(2f);
                 GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
+                yield return new WaitForSecondsRealtime(2f);
                 GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
                 Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
             }
@@ -96,7 +118,9 @@ public class Chest : MonoBehaviour
             winningText.text = winningAmt.ToString("C");
             if (ChestManager.Instance.cOpened >= ChestManager.Instance.cMax)
             {
+                yield return new WaitForSecondsRealtime(2f);
                 GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
+                yield return new WaitForSecondsRealtime(2f);
                 GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
                 Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
             }
@@ -111,10 +135,12 @@ public class Chest : MonoBehaviour
             GameManager.Instance.dividedChestWinningsList.Clear();
             ChestManager.Instance.DisableAllChests();
             GameManager.Instance.EnableBottomPanel();
+            yield return new WaitForSecondsRealtime(2f);
             GameManager.Instance.LastGameWinText.text = GameManager.Instance.winningTotal.ToString("C");
+            yield return new WaitForSecondsRealtime(2f);
             GameManager.Instance.banlanceText.text = GameManager.Instance.currentBalance.ToString("C");
             Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
             ChestManager.Instance.cOpened = 0;
         }
-    } 
+    }
 }

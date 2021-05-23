@@ -53,7 +53,7 @@ public class GameManager : Singleton<GameManager>
             ChestManager.Instance.DisableAllChests();
         } 
     }
-        // InsufficientFunds();
+        
     
     public void Play()
     {
