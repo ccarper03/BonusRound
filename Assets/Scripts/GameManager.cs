@@ -11,10 +11,12 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] public Text LastGameWinText;
     [SerializeField] public Text banlanceText;
     [SerializeField] private Text denoText;
+    [SerializeField] public Text bigWinText;
     [SerializeField] private Button playBtn;
     [SerializeField] private Button DenoSubBtn;
     [SerializeField] private Button DenoAddBtn;
     public GameObject RulesPanel;
+    public GameObject BigWinPanel;
 
     public int DivideWinningsCounter { get; set; }
     public decimal currentBalance = 10.00m;
@@ -29,7 +31,7 @@ public class GameManager : Singleton<GameManager>
     private int[] winMultiplyerHundreds = { 100, 200, 300, 400, 500 };
     public List<decimal> dividedChestWinningsList = new List<decimal>();
     private AudioSource audioSource;
-
+    //private bool haveMoneyLeft;
     public AudioSource AudioSource
     {
         get { return audioSource; }
@@ -41,6 +43,7 @@ public class GameManager : Singleton<GameManager>
         audioSource = GetComponent<AudioSource>();
         denoIndex = 0;
         currentBalance = 10m;
+        //haveMoneyLeft = true;
         denoText.text = denoAmt[denoIndex].ToString("C");
         banlanceText.text = currentBalance.ToString("C");
         DisableBottomPanel();
@@ -49,17 +52,13 @@ public class GameManager : Singleton<GameManager>
     }
     void Update()
     {
-
-        if (currentBalance < denoAmt[denoIndex])
-        {
-            ChestManager.Instance.CloseAllChests();
-            ChestManager.Instance.DisableAllChests();
-        } 
+        InsufficientFunds();
     }
         
     
     public void Play()
     {
+        ChestManager.Instance.stillOpeningChests = true;
         Instance.AudioSource.PlayOneShot(SoundManager.Instance.PlayClick);
         Debug.Log("++++++++++++++++++ Start +++++++++++++++++++++++");
         numOfChests = 0;
@@ -70,8 +69,6 @@ public class GameManager : Singleton<GameManager>
         EnableBottomPanel();
         ResetLastWinGameText();
         ResetDivideWinningCounter();
-
-
         if (denoAmt[denoIndex] <= currentBalance) // Check if you have enough in balance for Denomination amount
         {
             Debug.Log("Before Bal: " + currentBalance);
@@ -306,6 +303,7 @@ public class GameManager : Singleton<GameManager>
     public void EnableBottomPanel()
     {
         ChestManager.Instance.PauseAllChestsAnimations();
+        playBtn.GetComponent<Animator>().speed = 1;
         playBtn.interactable = true;
         DenoSubBtn.interactable = true;
         DenoAddBtn.interactable = true;
@@ -315,6 +313,7 @@ public class GameManager : Singleton<GameManager>
     public void DisableBottomPanel()
     {
         ChestManager.Instance.PlayAllChestsAnimations();
+        playBtn.GetComponent<Animator>().speed = 0;
         playBtn.interactable = false;
         DenoSubBtn.interactable = false;
         DenoAddBtn.interactable = false;
@@ -324,13 +323,18 @@ public class GameManager : Singleton<GameManager>
     // current balance, disables play button if true
     void InsufficientFunds()
     {
-        if (denoAmt[denoIndex] <= currentBalance)
+        if (denoAmt[denoIndex] > currentBalance)
         {
-            playBtn.interactable = true;
+            if (playBtn.interactable == true)
+            {
+                playBtn.interactable = false;
+                ChestManager.Instance.CloseAllChests();
+                ChestManager.Instance.DisableAllChests();
+            }
         }
-        else
+        else if(denoAmt[denoIndex] < currentBalance && ChestManager.Instance.AreAllChestsClosed == true && ChestManager.Instance.stillOpeningChests == false)
         {
-            playBtn.interactable = false;
+            EnableBottomPanel();
         }
     }
 
@@ -342,6 +346,7 @@ public class GameManager : Singleton<GameManager>
     public void RulesOk()
     {
         Debug.Log("trying to get out.");
+        Instance.AudioSource.PlayOneShot(SoundManager.Instance.PlayClick);
         RulesPanel = GameObject.Find("Rules");
         Instance.EnableBottomPanel();
         RulesPanel.SetActive(false);

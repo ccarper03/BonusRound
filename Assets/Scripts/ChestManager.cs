@@ -12,6 +12,8 @@ public class ChestManager :Singleton<ChestManager>
     public int chestsOpened;
     public int cOpened = 0;
     public int cMax = 9;
+    public bool AreAllChestsClosed = false;
+    public bool stillOpeningChests;
     public void DisableAllChests()
     {
         foreach (var chest in ChestList)
@@ -35,6 +37,7 @@ public class ChestManager :Singleton<ChestManager>
             chest.ChestImage.sprite = close;
             chest.winningText.text = "";
         }
+        AreAllChestsClosed = true;
     }
 
     public void PauseAllChestsAnimations()

@@ -16,11 +16,12 @@ public class Chest : MonoBehaviour
     [SerializeField] public Text winningText;
     [SerializeField] private Image chestImage;
     [SerializeField] private Button chestButton;
+    private GameObject bigWinPanel;
     public bool isCoinAnimDone = false;
     public GameObject coinPrefab;
     private decimal winningAmount;
-    private bool doneDoingTask;
     private IEnumerator coroutine;
+    private bool isBigWinStillUpdating;
     public Button ChestButton => chestButton;
     public Chest ChestObject => chestObject;
     public Image ChestImage => chestImage;
@@ -32,6 +33,7 @@ public class Chest : MonoBehaviour
 
     private void Start()
     {
+        isBigWinStillUpdating = false;
         isCoinAnimDone = false;
         chestButton.onClick.AddListener(OpenChest);
     }
@@ -41,7 +43,6 @@ public class Chest : MonoBehaviour
     }
     private void Update()
     {
-
     }
     public void OpenChest()
     {
@@ -91,17 +92,38 @@ public class Chest : MonoBehaviour
         }
         else if(winningAmt == .000m )
         {
+            
             gameObject.GetComponent<Animator>().speed = 0;
             chestButton.interactable = false;
             ChestManager.Instance.DisableAllChests();
             GameManager.Instance.DisableBottomPanel();
             chestImage.sprite = pooper;
             GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.Wrong);
-            //GameManager.Instance.dividedChestWinningsList.Clear();
-            StartCoroutine("LastWonAmountUpdater");
-            StartCoroutine("CoinAnimation");
-            StartCoroutine("BalUpdater");
+            if (GameManager.Instance.winningTotal >= 1000m)
+            {
+                GameManager.Instance.BigWinPanel.SetActive(true);
+                GameManager.Instance.AudioSource.PlayOneShot(SoundManager.Instance.CrabRave);
+
+                StartCoroutine("LastWonAmountUpdater");
+                StartCoroutine("BalUpdater");
+                yield return new WaitUntil(()=> isBigWinStillUpdating == false);
+                bigWinPanel = GameObject.Find("BigWin");
+                bigWinPanel.SetActive(false);
+                GameManager.Instance.AudioSource.Stop();
+                Debug.Log("Playing original track?");
+                GameManager.Instance.AudioSource.Play();
+                GameManager.Instance.EnableBottomPanel();
+
+            }
+            else
+            {
+                StartCoroutine("CoinAnimation");
+                StartCoroutine("LastWonAmountUpdater");
+                StartCoroutine("BalUpdater");
+            }
+            
             yield return new WaitUntil(() => isCoinAnimDone == true);
+
             GameManager.Instance.EnableBottomPanel();
             Debug.Log("+++++++++++++++++++ End +++++++++++++++++++++++++");
         }
@@ -141,17 +163,18 @@ public class Chest : MonoBehaviour
     {
         decimal start = 0;
         decimal target = GameManager.Instance.winningTotal;
+        isBigWinStillUpdating = true;
         GameManager.Instance.DisableBottomPanel();
-        while (true)
+        for (int j = 0; j < GameManager.Instance.winningTotal; j++)
         {
             if (start < target)
             {
-                start++; 
-                GameManager.Instance.LastGameWinText.text = start.ToString("C"); //Write it to the UI
+                start++;
+                GameManager.Instance.LastGameWinText.text = start.ToString("C");
+                GameManager.Instance.bigWinText.text = start.ToString("C");
             }
             yield return new WaitForSeconds(0.03f); // I used .2 secs but you can update it as fast as you want
         }
-        
+        isBigWinStillUpdating = false;
     }
-
 }
